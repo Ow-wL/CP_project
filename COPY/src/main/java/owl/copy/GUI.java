@@ -61,13 +61,13 @@ public class GUI extends JFrame {
         statusTextArea.setFont(new Font("Dialog", Font.PLAIN, 13));
 
         JScrollPane statusScrollPane = new JScrollPane(statusTextArea);
-        statusScrollPane.setBounds(5, 5, 560, 100);
+        statusScrollPane.setBounds(10, 10, 560, 100);
         add(statusScrollPane);
 
         // 버튼 패널
         mainPanel = new JPanel(null);
         JScrollPane scrollPane = new JScrollPane(mainPanel);
-        scrollPane.setBounds(5, 110, 560, 500);
+        scrollPane.setBounds(10, 110, 560, 500);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         add(scrollPane);
 
@@ -138,19 +138,19 @@ public class GUI extends JFrame {
         mainPanel.removeAll();
         buttonMap.clear();
 
-        int x = 5, y = 5;
+        int x = 10, y = 10;
         int count = 0;
 
         for (Map.Entry<String, String> entry : buttonData.entrySet()) {
             JButton btn = createButton(entry.getKey(), entry.getValue());
-            btn.setBounds(x, y, 120, 35);
+            btn.setBounds(x, y, 125, 35);
             mainPanel.add(btn);
             buttonMap.put(entry.getKey(), btn);
 
-            x += 130;
+            x += 135;
             count++;
             if (count % 4 == 0) {
-                x = 5;
+                x = 10;
                 y += 45;
             }
         }
