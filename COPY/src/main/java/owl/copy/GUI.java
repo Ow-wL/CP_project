@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Clipboard;
 import java.io.*;
+import java.net.URL;
 import java.util.*;
 
 import com.formdev.flatlaf.FlatLightLaf;
@@ -22,6 +23,21 @@ public class GUI extends JFrame {
     private int TextAreaHeight = 100;
 
     public GUI(String title) {
+        try {
+            String iconPath = "resources/icon.png";
+            URL iconUrl = getClass().getResource(iconPath);
+            if (iconUrl != null) {
+                Image appIcon = new ImageIcon(iconUrl).getImage();
+                this.setIconImage(appIcon);
+                System.out.println("애플리케이션 아이콘이 성공적으로 설정되었습니다.");
+            } else {
+                System.err.println("애플리케이션 아이콘 파일을 찾을 수 없습니다: " + iconPath);
+            }
+        } catch (Exception e) {
+            System.err.println("애플리케이션 아이콘 설정 중 오류 발생: " + e.getMessage());
+            e.printStackTrace();
+        }
+
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             UIManager.setLookAndFeel(new FlatLightLaf());
