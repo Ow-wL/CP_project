@@ -19,8 +19,11 @@ public class GUI extends JFrame {
     private enum Mode { NONE, REMOVE, EDIT }
     private Mode currentMode = Mode.NONE;
 
+    private int TextAreaHeight = 100;
+
     public GUI(String title) {
         try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             UIManager.setLookAndFeel(new FlatLightLaf());
             UIManager.put("ScrollBar.thumbArc", 10);
             UIManager.put("ScrollBar.thumbInsets", new Insets(2, 2, 2, 2));
@@ -43,12 +46,19 @@ public class GUI extends JFrame {
         JMenuItem m1_1 = new JMenuItem("Remove Button");
         JMenuItem m1_2 = new JMenuItem("Edit Button");
         JMenuItem m1_3 = new JMenuItem("Open Data File");
+//        JMenuItem m1_4 = new JMenuItem("Text Area Scale");
+
+        JMenu m2 = new JMenu("Refresh");
+        JMenuItem m2_0 = new JMenuItem("Refresh Button");
 
         m1.add(m1_0);
         m1.add(m1_1);
         m1.add(m1_2);
         m1.add(m1_3);
+//        m1.add(m1_4);
+        m2.add(m2_0);
         mb.add(m1);
+        mb.add(m2);
         setJMenuBar(mb);
 
         // 상태 메시지 영역
@@ -61,7 +71,7 @@ public class GUI extends JFrame {
         statusTextArea.setFont(new Font("Dialog", Font.PLAIN, 13));
 
         JScrollPane statusScrollPane = new JScrollPane(statusTextArea);
-        statusScrollPane.setBounds(10, 10, 560, 100);
+        statusScrollPane.setBounds(10, 10, 560, TextAreaHeight);
         add(statusScrollPane);
 
         // 버튼 패널
@@ -75,12 +85,12 @@ public class GUI extends JFrame {
 
         m1_1.addActionListener(e -> {
             currentMode = Mode.REMOVE;
-            statusTextArea.setText("삭제할 버튼을 클릭하세요.");
+            JOptionPane.showMessageDialog(null, "삭제할 버튼을 클릭하세요.", "버튼 삭제", JOptionPane.INFORMATION_MESSAGE);
         });
 
         m1_2.addActionListener(e -> {
             currentMode = Mode.EDIT;
-            statusTextArea.setText("수정할 버튼을 클릭하세요.");
+            JOptionPane.showMessageDialog(null, "수정할 버튼을 클릭하세요.", "버튼 수정", JOptionPane.INFORMATION_MESSAGE);
         });
 
         m1_3.addActionListener(e -> {
@@ -96,6 +106,39 @@ public class GUI extends JFrame {
             }
         });
 
+//        m1_4.addActionListener(e -> {
+//            String inputValue = JOptionPane.showInputDialog(null, "텍스트 박스의 높이 값을 입력해주세요.(정수)", "높이 설정", JOptionPane.QUESTION_MESSAGE);
+//            if (inputValue != null){
+//                if (!inputValue.trim().isEmpty()) {
+//                    try {
+//                        int parsedHeight = Integer.parseInt(inputValue.trim());
+//                        if(parsedHeight <= 0) {
+//                            JOptionPane.showMessageDialog(null, "'" + inputValue + "'은 높이로 설정될 수 없습니다.", "입력값 오류", JOptionPane.ERROR_MESSAGE);
+//                        }
+//                        else {
+//                            TextAreaHeight = parsedHeight;
+//                            statusScrollPane.setBounds(statusScrollPane.getX(), statusScrollPane.getY(), statusScrollPane.getWidth(), TextAreaHeight);
+//                            getContentPane().revalidate();
+//                            getContentPane().repaint();
+//                            JOptionPane.showMessageDialog(null,  "텍스트 박스 높이가 "+ TextAreaHeight + "로 설정 되었습니다.", "높이 변경", JOptionPane.INFORMATION_MESSAGE);
+//                        }
+//                    } catch (NumberFormatException e2) {
+//                        JOptionPane.showMessageDialog(null, "'" + inputValue + "'은(는) 유효한 정수가 아닙니다.", "입력값 오류", JOptionPane.ERROR_MESSAGE);
+//                    }
+//                } else {
+//                    JOptionPane.showMessageDialog(null, "값이 입력되지 않았습니다.", "입력값 오류", JOptionPane.WARNING_MESSAGE);
+//                }
+//            } else {
+//                JOptionPane.showMessageDialog(null, "입력이 취소되었습니다.", "입력값 오류", JOptionPane.WARNING_MESSAGE);
+//            }
+//        });
+
+        // 버튼 새로고침
+        m2_0.addActionListener(e -> {
+            loadButtonsFromFile();
+            refreshButtons();
+            JOptionPane.showMessageDialog(null, "모든 버튼이 새로고침 되었습니다!", "버튼 새로고침", JOptionPane.INFORMATION_MESSAGE);
+        });
         loadButtonsFromFile();
         setResizable(false);
         setVisible(true);
@@ -138,7 +181,7 @@ public class GUI extends JFrame {
         mainPanel.removeAll();
         buttonMap.clear();
 
-        int x = 10, y = 10;
+        int x = 13, y = 10;
         int count = 0;
 
         for (Map.Entry<String, String> entry : buttonData.entrySet()) {
@@ -150,7 +193,7 @@ public class GUI extends JFrame {
             x += 135;
             count++;
             if (count % 4 == 0) {
-                x = 10;
+                x = 13;
                 y += 45;
             }
         }
@@ -175,7 +218,7 @@ public class GUI extends JFrame {
                     buttonData.remove(name);
                     refreshButtons();
                     saveButtonsToFile();
-                    statusTextArea.setText("'" + name + "' 버튼이 삭제되었습니다.");
+                    JOptionPane.showMessageDialog(null, name + " 버튼이 삭제되었습니다.", "버튼 삭제", JOptionPane.INFORMATION_MESSAGE);
                 }
                 currentMode = Mode.NONE;
             } else if (currentMode == Mode.EDIT) {
@@ -224,6 +267,8 @@ public class GUI extends JFrame {
     private void loadButtonsFromFile() {
         File file = new File(SAVE_FILE);
         if (!file.exists()) return;
+
+        buttonData.clear();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             StringBuilder jsonText = new StringBuilder();
