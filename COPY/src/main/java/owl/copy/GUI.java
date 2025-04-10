@@ -24,7 +24,8 @@ public class GUI extends JFrame {
 
     public GUI(String title) {
         try {
-            String iconPath = "resources/icon.png";
+            // 컨텐츠 루트 기준 경로로 수정
+            String iconPath = "/icon.png";
             URL iconUrl = getClass().getResource(iconPath);
             if (iconUrl != null) {
                 Image appIcon = new ImageIcon(iconUrl).getImage();
@@ -84,7 +85,7 @@ public class GUI extends JFrame {
         statusTextArea.setEditable(false);
         statusTextArea.setBackground(new Color(240, 240, 240));
         statusTextArea.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-        statusTextArea.setFont(new Font("Dialog", Font.PLAIN, 13));
+        statusTextArea.setFont(new Font("Dialog", Font.PLAIN, 12));
 
         JScrollPane statusScrollPane = new JScrollPane(statusTextArea);
         statusScrollPane.setBounds(10, 10, 560, TextAreaHeight);
@@ -214,17 +215,18 @@ public class GUI extends JFrame {
             }
         }
 
-        mainPanel.setPreferredSize(new Dimension(560, y + 50));
+        mainPanel.setPreferredSize(new Dimension(550, y + 50));
         mainPanel.revalidate();
         mainPanel.repaint();
     }
 
     private JButton createButton(String name, String value) {
         JButton btn = new JButton(name);
-        btn.setBackground(new Color(52, 192, 234));
-        btn.setForeground(Color.WHITE);
+        btn.setBackground(new Color(158, 198, 243));
+        btn.setForeground(Color.BLACK);
         btn.setFocusPainted(false);
-        btn.setFont(new Font("Dialog", Font.BOLD, 14));
+        btn.setMargin(new Insets(5, 10, 5, 10));
+        btn.setFont(new Font("Dialog", Font.PLAIN, 12));
 
         btn.addActionListener(e -> {
             if (currentMode == Mode.REMOVE) {
