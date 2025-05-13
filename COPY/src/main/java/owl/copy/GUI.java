@@ -27,6 +27,10 @@ public class GUI extends JFrame {
     }
 
     public GUI(String title) {
+
+        String buttonPath = Config.getButtonJsonPath();
+        System.out.println("버튼 JSON 파일 경로: " + buttonPath);
+
         try {
             // 컨텐츠 루트 기준 경로로 수정
             String iconPath = "/icon.png";
