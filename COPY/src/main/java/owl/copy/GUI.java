@@ -11,7 +11,7 @@ import java.util.*;
 import com.formdev.flatlaf.FlatLightLaf;
 
 public class GUI extends JFrame {
-    private static final String SAVE_FILE = "buttons.json";
+    private static String SAVE_FILE = Config.getButtonJsonPath();
     private Map<String, String> buttonData = new LinkedHashMap<>();
     private Map<String, JButton> buttonMap = new LinkedHashMap<>();
     private JPanel mainPanel;
@@ -21,6 +21,10 @@ public class GUI extends JFrame {
     private Mode currentMode = Mode.NONE;
 
     private int TextAreaHeight = 100;
+
+    public static void main(String[] args) {
+        GUI frame = new GUI("Copy_OWL");
+    }
 
     public GUI(String title) {
         try {
@@ -38,6 +42,7 @@ public class GUI extends JFrame {
             System.err.println("애플리케이션 아이콘 설정 중 오류 발생: " + e.getMessage());
             e.printStackTrace();
         }
+
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -63,19 +68,27 @@ public class GUI extends JFrame {
         JMenuItem m1_1 = new JMenuItem("Remove Button");
         JMenuItem m1_2 = new JMenuItem("Edit Button");
         JMenuItem m1_3 = new JMenuItem("Open Data File");
+        JMenuItem m1_5 = new JMenuItem("Set Data Directory");
 //        JMenuItem m1_4 = new JMenuItem("Text Area Scale");
 
         JMenu m2 = new JMenu("Refresh");
         JMenuItem m2_0 = new JMenuItem("Refresh Button");
+
+        JMenu m3 = new JMenu("Help");
+        JMenuItem m3_0 = new JMenuItem("Info");
 
         m1.add(m1_0);
         m1.add(m1_1);
         m1.add(m1_2);
         m1.add(m1_3);
 //        m1.add(m1_4);
+        m1.add(m1_5);
         m2.add(m2_0);
+        m3.add(m3_0);
+
         mb.add(m1);
         mb.add(m2);
+        mb.add(m3);
         setJMenuBar(mb);
 
         // 상태 메시지 영역
@@ -149,6 +162,32 @@ public class GUI extends JFrame {
 //                JOptionPane.showMessageDialog(null, "입력이 취소되었습니다.", "입력값 오류", JOptionPane.WARNING_MESSAGE);
 //            }
 //        });
+
+        // 데이터 파일 경로 지정
+        m1_5.addActionListener(e -> {
+            SwingUtilities.invokeLater(() -> {
+                JFileChooser fileChooser = new JFileChooser();
+
+                // .json 파일만 보이도록 설정
+                fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("JSON files", "json"));
+
+                fileChooser.setDialogTitle("JSON 파일 선택");
+                int result = fileChooser.showOpenDialog(null);
+
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    String path = selectedFile.getAbsolutePath();
+                    System.out.println("선택된 파일 경로: " + path);
+                    JOptionPane.showMessageDialog(null, "데이터 파일이 선택되었습니다! \n경로 : " + path, "JSON 파일 선택 완료", JOptionPane.INFORMATION_MESSAGE);
+                    SAVE_FILE = path;
+                    Config.setButtonJsonPath(SAVE_FILE); // 경로 저장
+                    refreshButtons();
+                } else {
+                    System.out.println("파일 선택이 취소되었습니다.");
+                    JOptionPane.showMessageDialog(null, "데이터 파일 선택이 취소되었습니다.", "JSON 파일 선택 취소", JOptionPane.WARNING_MESSAGE);
+                }
+            });
+        });
 
         // 버튼 새로고침
         m2_0.addActionListener(e -> {
