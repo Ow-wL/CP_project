@@ -168,6 +168,12 @@ public class GUI extends JFrame {
             SwingUtilities.invokeLater(() -> {
                 JFileChooser fileChooser = new JFileChooser();
 
+
+                String userHome = System.getProperty("user.home");
+                File appDataRoaming = new File(userHome, "AppData\\Roaming");
+                 fileChooser.setCurrentDirectory(appDataRoaming);
+
+
                 // .json 파일만 보이도록 설정
                 fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("JSON files", "json"));
 
@@ -195,6 +201,12 @@ public class GUI extends JFrame {
             refreshButtons();
             JOptionPane.showMessageDialog(null, "모든 버튼이 새로고침 되었습니다!", "버튼 새로고침", JOptionPane.INFORMATION_MESSAGE);
         });
+        
+        // Info 출력
+        m3_0.addActionListener(e -> {
+            JOptionPane.showMessageDialog(null, "프로그램 : Copy_owl \n버전 : 2.0 \n제작 : OwwL(Discord ID : owvwvl)", "프로그램 정보", JOptionPane.INFORMATION_MESSAGE);
+        });
+        
         loadButtonsFromFile();
         setResizable(false);
         setVisible(true);
